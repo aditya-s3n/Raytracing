@@ -14,6 +14,10 @@ add_executable(raytrace
     src/vec3.cpp
     src/color.cpp
     src/ray.cpp
+    src/actor.cpp
+    src/actor_list.cpp
+    src/sphere.cpp
+    src/interval.cpp
 )
 
 # Tell the compiler where to find headers
