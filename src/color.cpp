@@ -5,9 +5,11 @@ void write_color(std::ostream& out, const color& pixel_color) {
     auto g = pixel_color.y();
     auto b = pixel_color.z();
 
-    int ir = int(255.999 * r);
-    int ig = int(255.999 * g);
-    int ib = int(255.999 * b);
+
+    static const interval intensity(0.000, 0.999);
+    int ir = int(256 * intensity.clamp(r));
+    int ig = int(256 * intensity.clamp(g));
+    int ib = int(256 * intensity.clamp(b));
 
     std::cout << ir << ' ' << ig << ' ' << ib << '\n';
 }

@@ -22,6 +22,8 @@ void camera::initialize() {
         img_height = 1;
     }
 
+    pixel_samples_scale = 1.0 / samples_per_pixel;
+
     // CAMERA
     auto focal_len = 1.0;
     auto viewport_height = 2.0;
@@ -53,13 +55,13 @@ void camera::render(const actor& world) {
 
         for (int i = 0; i < img_width; i++) {
 
-            auto pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v); // pixel to render
-            auto ray_direction = pixel_center - center;
-            ray r(center, ray_direction);
+            color pixel_color(0, 0, 0);
+            for (int sample = 0; sample < samples_per_pixel; sample++) {
+                ray r = get_ray(i, j);
+                pixel_color += ray_color(r, world);
+            }
 
-            color pixel_color = ray_color(r, world);
-
-            write_color(std::cout, pixel_color);
+            write_color(std::cout, pixel_samples_scale * pixel_color);
 
         }
 
@@ -67,4 +69,22 @@ void camera::render(const actor& world) {
 
 
     std::clog << "\rDone.\n";
+}
+
+ray camera::get_ray(int i, int j) const {
+    // construct ray from origin, and sample randomly around it
+    auto offest = sample_square();
+    auto pixel_sample = pixel00_loc 
+                        + ((i + offest.x()) * pixel_delta_u)
+                        + ((j + offest.y()) * pixel_delta_v);
+                        
+    auto ray_orig = center;
+    auto ray_direc = pixel_sample - ray_orig;
+
+    return ray(ray_orig, ray_direc);
+}
+
+vec3 camera::sample_square() const {
+    // return random vector to a random point unit square [-0.5, -0.5] - [0.5, 0.5]
+    return vec3(random_double() - 0.5, random_double() - 0.5, 0);
 }
