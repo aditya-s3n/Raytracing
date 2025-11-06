@@ -18,6 +18,7 @@ add_executable(raytrace
     src/actor_list.cpp
     src/sphere.cpp
     src/interval.cpp
+    src/camera.cpp
 )
 
 # Tell the compiler where to find headers
