@@ -1,6 +1,7 @@
 #pragma once
 
 #include "actor.h"
+#include "material.h"
 
 class camera {
     public:

@@ -19,6 +19,7 @@ add_executable(raytrace
     src/sphere.cpp
     src/interval.cpp
     src/camera.cpp
+    src/material.cpp
 )
 
 # Tell the compiler where to find headers

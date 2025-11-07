@@ -2,8 +2,8 @@
 
 ray::ray() { }
 ray::ray(const point3& origin, const vec3& direction) {
-    orig = orig;
-    direc = direction;
+    this->orig = origin;
+    this->direc = direction;
 }
 
 const point3& ray::origin() const {
