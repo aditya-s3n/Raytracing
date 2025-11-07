@@ -7,6 +7,7 @@ class camera {
         double aspect_ratio = 1.0;  // Ratio of image width over height
         int img_width = 100;  // Rendered image width in pixel count
         int samples_per_pixel = 10; // random samples for anti-aliasing
+        int max_depth = 10; // max ray bounces
     
         void render(const actor& world);
 
@@ -24,5 +25,5 @@ class camera {
 
         vec3 sample_square() const;
 
-        color ray_color(const ray& r, const actor& world);
+        color ray_color(const ray& r, int depth, const actor& world) const;
 };
