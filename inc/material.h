@@ -35,3 +35,15 @@ class metal : public material {
 
 
 };
+
+class dielectric : public material {
+    private:
+        double refraction_index;
+
+        static double reflectance(double cosine, double refraction_index);
+
+    public:
+        dielectric(double refract_index);
+
+        bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override;
+};
