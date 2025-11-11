@@ -11,12 +11,12 @@ class material {
         }
 };
 
-class labmertian : public material {
+class lambertian : public material {
     private:
         color albedo;
     
     public:
-        labmertian(const color& alb);
+        lambertian(const color& alb);
 
         bool scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const override;
 

@@ -1,10 +1,10 @@
 #include "material.h"
 
-labmertian::labmertian(const color& alb) {
+lambertian::lambertian(const color& alb) {
     this->albedo = alb;
 }
 
-bool labmertian::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const {
+bool lambertian::scatter(const ray& r_in, const hit_record& rec, color& attenuation, ray& scattered) const {
     auto scatter_direction = rec.normal + random_unit_vector();
     
     if (scatter_direction.near_zero()) scatter_direction = rec.normal;

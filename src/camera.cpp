@@ -35,22 +35,31 @@ void camera::initialize() {
 
     pixel_samples_scale = 1.0 / samples_per_pixel;
 
+    center = lookfrom;
+
     // CAMERA
-    auto focal_len = 1.0;
-    auto viewport_height = 2.0;
+    auto focal_len = (lookfrom - lookat).length();
+    auto theta = degrees_to_radians(vfov);
+    auto h = std::tan(theta / 2);
+    auto viewport_height = 2.0 * h * focal_len;
     auto viewport_width = viewport_height * (double(img_width)/img_height);
-    center = point3(0, 0, 0);
+    
+
+    // u, w, v basis vectors for camera coordinate frame
+    w = unit_vector(lookfrom - lookat);
+    u = unit_vector(cross(vup, w));
+    v = cross(w, u);
 
     // viewport vectors
-    auto viewport_u = vec3(viewport_width, 0, 0);
-    auto viewport_v = vec3(0, -viewport_height, 0);
+    auto viewport_u = viewport_width * u;
+    auto viewport_v = viewport_height * -v;
 
     // horizontal and vertical delta
     pixel_delta_u = viewport_u / img_width;
     pixel_delta_v = viewport_v / img_height;
 
     // location of top left pixel
-    auto viewport_upper_left = center - vec3(0, 0, focal_len) - viewport_u/2 - viewport_v/2;
+    auto viewport_upper_left = center - (focal_len * w) - viewport_u/2 - viewport_v/2;
     pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 }
 
