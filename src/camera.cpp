@@ -38,10 +38,9 @@ void camera::initialize() {
     center = lookfrom;
 
     // CAMERA
-    auto focal_len = (lookfrom - lookat).length();
     auto theta = degrees_to_radians(vfov);
     auto h = std::tan(theta / 2);
-    auto viewport_height = 2.0 * h * focal_len;
+    auto viewport_height = 2.0 * h * focus_dist;
     auto viewport_width = viewport_height * (double(img_width)/img_height);
     
 
@@ -59,8 +58,14 @@ void camera::initialize() {
     pixel_delta_v = viewport_v / img_height;
 
     // location of top left pixel
-    auto viewport_upper_left = center - (focal_len * w) - viewport_u/2 - viewport_v/2;
+    auto viewport_upper_left = center - (focus_dist * w) - viewport_u/2 - viewport_v/2;
     pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+
+
+    // calculate the camera defocus disk basis vectors
+    auto defocus_radius = focus_dist * std::tan(degrees_to_radians(defocus_angle / 2));
+    defocus_disk_u = u * defocus_radius;
+    defocus_disk_v = v * defocus_radius;
 }
 
 void camera::render(const actor& world) {
@@ -98,10 +103,16 @@ ray camera::get_ray(int i, int j) const {
                         + ((i + offest.x()) * pixel_delta_u)
                         + ((j + offest.y()) * pixel_delta_v);
                         
-    auto ray_orig = center;
+    auto ray_orig = (defocus_angle <= 0) ? center : defocus_disk_sample();
     auto ray_direc = pixel_sample - ray_orig;
 
     return ray(ray_orig, ray_direc);
+}
+
+point3 camera::defocus_disk_sample() const {
+    // random point in disk
+    auto p = random_in_unit_disk();
+    return center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
 }
 
 vec3 camera::sample_square() const {
